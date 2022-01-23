@@ -134,11 +134,20 @@ class TestPromotions():
         assert expected_total_discount_money == actual_total_discount_money
 
 
-        def test_receivable_x_and_y_dollar_off(self, alans_order):
-            """ (加分題)訂單滿 X 元折 Z %,折扣每人只能總共優惠 N 元 """
-            caculator = Caculator(alans_order)
-            expected_total_price = 690
-            actual_total_price = caculator.original_total_price
-            assert expected_total_price == actual_total_price
+    def test_receivable_x_discount_personal_limit(self, alans_order):
+        """ (加分題)訂單滿 X 元折 Z %,折扣每人只能總共優惠 N 元 """
+        caculator = Caculator(alans_order)
+        expected_total_price = 690
+        actual_total_price = caculator.original_total_price
+        assert expected_total_price == actual_total_price
 
-            promotion5  = TotalOrderDiscountPersonalLimitPromotion(x=200, y=0.90, n=50)  # 訂單滿200, 9折, 每個人上限50
+        promotion5  = TotalOrderDiscountPersonalLimitPromotion(x=200, z=0.90, n=50)  # 訂單滿200, 9折, 每個人上限50
+
+        promotion_pipeline = PromotionPipeline()
+        promotion_pipeline.register(promotion5)
+
+        caculator.use_total_promotion(promotion_pipeline)
+
+        actual_total_discount_money = caculator.total_discount_money
+        expected_total_discount_money = 50
+        assert expected_total_discount_money == actual_total_discount_money

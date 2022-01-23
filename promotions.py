@@ -1,4 +1,6 @@
 from abc import ABC, abstractclassmethod
+from collections import defaultdict
+from email.policy import default
 
 # interface of Promotion and Promotion Pipeline
 class IPromotion():
@@ -103,7 +105,14 @@ class TotalOrderDiscountPersonalLimitPromotion(IPromotion):
         self.z = z
         self.limit_per_person = n
         # 實際應用應存放在 Database 中, 但此處為了簡化寫法, 記錄在memory中
-        self.record = dict()  # {customer_id: used_quota}
+        self.record = defaultdict(int)  # {customer_id: used_quota}
 
     def use_promotion(self, order):
-        pass
+        self.discount_money = 0
+        self.gifts = list()
+        quota = self.limit_per_person - self.record.get(order.customer.user_id, 0)
+        if order.original_price >= self.x:
+            discount_without_limit = order.original_price*self.z
+            self.discount_money = quota if quota <= discount_without_limit else discount_without_limit
+            self.record[order.customer.user_id] += self.discount_money
+            
