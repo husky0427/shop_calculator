@@ -2,7 +2,7 @@ import pytest
 
 from caculator import Product, Order, Caculator
 from model import User, Product
-from promotions import (TotalOrderDiscountPromotion, PromotionPipeline, SpecificCommodityPromotion
+from promotions import (TotalOrderDiscountPromotion, PromotionPipeline, SpecificCommodityPromotion, TotalOrderDiscountPersonalLimitPromotion
         ,TotalOrderGiftPromotion, TotalOrderCashBackPromotion)
 
 
@@ -14,7 +14,8 @@ notebook = Product('notebook', 50)
 
 @pytest.fixture()
 def alans_order():
-    alans_order = Order()
+    alan = User('Alan')
+    alans_order = Order(alan)
     alans_order.add_commodity(book, 5)
     alans_order.add_commodity(pen, 3)
     alans_order.add_commodity(notebook, 2)
@@ -23,8 +24,9 @@ def alans_order():
 
 class TestPromotions():
     def test_generate_a_new_order(self):
-        alans_order = Order()
-        assert len(alans_order.commodities_in_order) == 0 
+        bob = User('Bob')
+        bob_order = Order(bob)
+        assert len(bob_order.commodities_in_order) == 0 
 
 
     def test_receivable_x_and_discount(self, alans_order):
@@ -102,7 +104,8 @@ class TestPromotions():
         assert expected_total_discount_money == actual_total_discount_money
 
         # 另一新訂單: Judy's order
-        judys_order = Order()
+        judy = User('Judy')
+        judys_order = Order(judy)
         judys_order.add_commodity(book, 7)
         judys_order.add_commodity(pen, 3)
         judys_order.add_commodity(notebook, 0)
@@ -117,7 +120,8 @@ class TestPromotions():
         assert expected_total_discount_money == actual_total_discount_money
 
         # 第三筆訂單: Tim's order, 此時優惠用光了, 所以 discount_money == 0
-        tims_order = Order()
+        tim = User('Tim')
+        tims_order = Order(tim)
         tims_order.add_commodity(book, 2)
         tims_order.add_commodity(pen, 1)
         tims_order.add_commodity(notebook, 0)
@@ -130,4 +134,11 @@ class TestPromotions():
         assert expected_total_discount_money == actual_total_discount_money
 
 
-        
+        def test_receivable_x_and_y_dollar_off(self, alans_order):
+            """ (加分題)訂單滿 X 元折 Z %,折扣每人只能總共優惠 N 元 """
+            caculator = Caculator(alans_order)
+            expected_total_price = 690
+            actual_total_price = caculator.original_total_price
+            assert expected_total_price == actual_total_price
+
+            promotion5  = TotalOrderDiscountPersonalLimitPromotion(x=200, y=0.90, n=50)  # 訂單滿200, 9折, 每個人上限50

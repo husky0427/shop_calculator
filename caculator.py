@@ -1,8 +1,11 @@
 from model import Product
+from model import User
+
 
 class Order():
-    def __init__(self):
+    def __init__(self, customer: User):
         self.order_id = "uuid"  # 在此不實作取得 uuid 的方式
+        self.customer = customer
         self.commodities_in_order = dict()  # {product_name: amount}
         self.original_price = 0
 

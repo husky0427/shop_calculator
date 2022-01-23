@@ -1,13 +1,14 @@
 import pytest
 from caculator import Order, Caculator
-from model import Product
+from model import Product, User
 
 book = Product('book', 100)
 pen = Product('pen', 30)
 notebook = Product('notebook', 50)
 
 def test_order():
-    order = Order()
+    danny = User('Danny')
+    order = Order(danny)
     assert 'uuid' == order.order_id
     assert {} == order.commodities_in_order
     assert 0 == order.original_price
@@ -23,7 +24,8 @@ def test_order():
 
 
 def test_caculator():
-    order = Order()
+    john = User('John')
+    order = Order(john)
     order.add_commodity(book, 5)
     order.add_commodity(pen, 3)
 

@@ -95,3 +95,15 @@ class TotalOrderCashBackPromotion(IPromotion):
             self.discount_money =  self.y
             self.n -= 1
     
+
+class TotalOrderDiscountPersonalLimitPromotion(IPromotion):
+    """ (加分題)訂單滿 X 元折 Z %,折扣每人只能總共優惠 N 元 """
+    def __init__(self, x, z, n):
+        self.x = x
+        self.z = z
+        self.limit_per_person = n
+        # 實際應用應存放在 Database 中, 但此處為了簡化寫法, 記錄在memory中
+        self.record = dict()  # {customer_id: used_quota}
+
+    def use_promotion(self, order):
+        pass
