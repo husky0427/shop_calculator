@@ -18,7 +18,7 @@ class Order():
         self.original_price += commodity.price * amount
 
 
-class Caculator():
+class Calculator():
     def __init__(self, order_to_be_calculated: Order):
         self.order = order_to_be_calculated
         self.original_total_price = self.order.original_price

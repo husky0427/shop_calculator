@@ -1,5 +1,5 @@
 import pytest
-from caculator import Order, Caculator
+from calculator import Order, Calculator
 from model import Product, User
 
 book = Product('book', 100)
@@ -23,14 +23,14 @@ def test_order():
     assert expected_original_price == actual_original_price
 
 
-def test_caculator():
+def test_calculator():
     john = User('John')
     order = Order(john)
     order.add_commodity(book, 5)
     order.add_commodity(pen, 3)
 
-    caculator = Caculator(order)
-    assert order.original_price == caculator.original_total_price
-    assert [] == caculator.total_gifts
+    calculator = Calculator(order)
+    assert order.original_price == calculator.original_total_price
+    assert [] == calculator.total_gifts
 
     

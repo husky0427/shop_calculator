@@ -112,7 +112,7 @@ class TotalOrderDiscountPersonalLimitPromotion(IPromotion):
         self.gifts = list()
         quota = self.limit_per_person - self.record.get(order.customer.user_id, 0)
         if order.original_price >= self.x:
-            discount_without_limit = order.original_price*self.z
+            discount_without_limit = round(order.original_price * (1-self.z))
             self.discount_money = quota if quota <= discount_without_limit else discount_without_limit
             self.record[order.customer.user_id] += self.discount_money
             
